@@ -73,7 +73,6 @@ wkd_store = WKDFileStore(WKD_KEY_STORE)
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-
         token = None
         if 'X-API-Key' in request.headers:
             token = request.headers['X-API-KEY']

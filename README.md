@@ -1,5 +1,6 @@
 # wkd-admin-server
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/45d088f65a05b98cf43f/maintainability)](https://codeclimate.com/github/LiberaCore/wkd-admin-server/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/45d088f65a05b98cf43f/test_coverage)](https://codeclimate.com/github/LiberaCore/wkd-admin-server/test_coverage)
 Flask RestPlus based API for managing OpenPGP keys in a Web Key Directory.
 
 ### Running tests
