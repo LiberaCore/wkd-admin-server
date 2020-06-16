@@ -94,6 +94,7 @@ class AdminKeyClass(Resource):
     @api.doc(responses={ 200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error' },
     params={'email': 'email to lookup'})
     def get(self, email):
+        # //TODO: delete after check
         #wkd_store = WKDFileStore(WKD_KEY_STORE)
 
         if wkd_store.is_key_available(email):
@@ -116,7 +117,8 @@ class AdminKeyClass(Resource):
         try:
             if Utils.is_email_allowed(email, ALLOWED_DOMAINS) is False:
                 admin_ns.abort(500, e.__doc__, status = "Could not save information. Email and key uid do not match or domain is not allowed.", statusCode = "500")
-            wkd_store = WKDFileStore(WKD_KEY_STORE)
+            # //TODO: delete after check
+            #wkd_store = WKDFileStore(WKD_KEY_STORE)
             wkd_store.add(email, base64.b64decode(request.json['key']))
             return {
             "status": True
@@ -135,6 +137,7 @@ class AdminKeyClass(Resource):
     @token_required
     def delete(self, email):
         try:
+            # //TODO: delete after check
             #wkd_store = WKDFileStore(WKD_KEY_STORE)
             _status = wkd_store.delete(email)
             return {
