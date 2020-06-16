@@ -176,3 +176,12 @@ class WKDFileStore(object):
         if os.path.isfile(key_path) and os.access(key_path, os.R_OK):
             return True
         return False
+
+class Utils(object):
+    @staticmethod
+    def is_email_allowed(email, domain_allow_list):
+        _local_part, _domain = email.split("@", 1)
+        if _domain not in domain_allow_list:
+            return False
+        else:
+            return True

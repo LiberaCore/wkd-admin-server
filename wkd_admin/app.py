@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, render_template, redirect, Response
 from flask_restplus import Api, Resource, fields, errors
 from config import WKD_KEY_STORE, GPG_TEMP, ADMIN_TOKEN, ALLOWED_DOMAINS, RATE_LIMIT
-from key_backend import KeyInspector, HKPTools, WKDFileStore
+from key_backend import KeyInspector, HKPTools, WKDFileStore, Utils
 import base64
 from functools import wraps
 from flask_limiter import Limiter
@@ -58,13 +58,16 @@ for allowed_domain in ALLOWED_DOMAINS:
 
 
 key_model = api.model('Key Model',
-          {'key': fields.String(required = True,
-                     description="key of the person",
-help="Key cannot be blank.")})
+          {'key':   fields.String(required = True,
+                    description="key of the person",
+                    help="Key cannot be blank.")})
+
 
 # Add admin namespace
 admin_ns = api.namespace('admin', description='Admin APIs')
 
+# load wkd-store
+wkd_store = WKDFileStore(WKD_KEY_STORE)
 
 # token_required decorator for Token check
 def token_required(f):
@@ -91,7 +94,7 @@ class AdminKeyClass(Resource):
     @api.doc(responses={ 200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error' },
     params={'email': 'email to lookup'})
     def get(self, email):
-        wkd_store = WKDFileStore(WKD_KEY_STORE)
+        #wkd_store = WKDFileStore(WKD_KEY_STORE)
 
         if wkd_store.is_key_available(email):
             return {
@@ -111,8 +114,7 @@ class AdminKeyClass(Resource):
     @token_required
     def post(self, email):
         try:
-            _local_part, _domain = email.split("@", 1)
-            if _domain not in ALLOWED_DOMAINS:
+            if Utils.is_email_allowed(email, ALLOWED_DOMAINS) is False:
                 admin_ns.abort(500, e.__doc__, status = "Could not save information. Email and key uid do not match or domain is not allowed.", statusCode = "500")
             wkd_store = WKDFileStore(WKD_KEY_STORE)
             wkd_store.add(email, base64.b64decode(request.json['key']))
@@ -133,7 +135,7 @@ class AdminKeyClass(Resource):
     @token_required
     def delete(self, email):
         try:
-            wkd_store = WKDFileStore(WKD_KEY_STORE)
+            #wkd_store = WKDFileStore(WKD_KEY_STORE)
             _status = wkd_store.delete(email)
             return {
                 "status": _status
